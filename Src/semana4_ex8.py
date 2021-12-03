@@ -28,7 +28,7 @@ class binary_list(Scene):
         row1, row2 = ["1", "0", "0", "0", "1", "1"], ["0", "0", "0", "0", "0", "0"]
         t1 = Table([row1], include_outer_lines=True).scale(0.6) # SECRET KEY
         t2 = Table([row1], include_outer_lines=True).scale(0.6) # CURRENT KEY
-        row_obj = t2.get_rows()[0] 
+        row_obj = t1.get_rows()[0] 
         # Add text to secret key
         text2 = Text("Chave secreta", gradient=(BLUE, GREEN)).scale(0.5).next_to(t1, LEFT)
 
@@ -101,12 +101,12 @@ class binary_list(Scene):
             for i in range(len(r1)):
                 curr_vec = Vector(UP).next_to(row_obj[i], DOWN, buff=0.6).scale(0.8)
                 self.play(ReplacementTransform(prev_vec, curr_vec)) # Update prev vector
-                self.wait(0.2)
+                self.wait(0.1)
 
                 if r1[i] != r2[i]:
                     incorretos += 1
 
-                self.wait(0.2)
+                self.wait(0.1)
                 prev_vec = curr_vec
 
             self.wait(1)
@@ -120,10 +120,14 @@ class binary_list(Scene):
         
         # Update minimum value
         minincorretos.set_value(int(incorretos.get_value()))
-        self.wait(1)
+        self.wait(0.5)
+        
+        text_avaliador = MarkupText(f"O <span fgcolor='{RED}'>avaliador</span> determina o número de incorretos").next_to(t1, DOWN, buff=0.7).scale(0.7)
+        self.play(FadeIn(text_avaliador))
+        self.wait(1.5)
 
         # Fade out screen
-        v = VGroup(t1, t2, text4, text5, text6, text7, text2, text3)
+        v = VGroup(t1, t2, text4, text5, text6, text7, text2, text3, text_avaliador)
         self.play(FadeOut(v))
         # CALCULATE NUMBER OF INCORRECT DIGITS SCENE ENDED
 
@@ -146,8 +150,8 @@ Senão:
         self.wait(14)
 
         # Clear scene
-        v1 = VGroup(text8, rendered_code)
-        self.play(FadeOut(v1))
+        v = VGroup(text8, rendered_code)
+        self.play(FadeOut(v))
         # PSEUDOCODE SCENE ENDED
 
         """
@@ -196,7 +200,7 @@ Senão:
             incorrect_count(t1, row1, row2, incorretos)
 
             # Second step
-            text10 = Text("1. Alterar número atual").scale(0.5).next_to(text9, DOWN)
+            text10 = Text("1. Alterar dígito atual").scale(0.5).next_to(text9, DOWN)
             self.play(FadeIn(text10))
 
             # Flip current digit
@@ -213,6 +217,7 @@ Senão:
                 self.play(FadeIn(text11))
                 self.wait(2)
                 self.play(FadeOut(text11))
+                self.play(FadeOut(vec))
                 tentativa += 1
                 continue
 
@@ -224,7 +229,7 @@ Senão:
                 tentativa += 1
         
         # Last pass
-        incorrect_count(t1, row1, row2, incorretos, 5)
+        incorrect_count(t1, row1, row2, incorretos)
         # ALGORITHM SCENE ENDED
 
         """
