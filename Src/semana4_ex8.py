@@ -83,7 +83,7 @@ class binary_list(Scene):
         minincorretos += 1
         self.wait(1)
 
-        def incorrect_count(t1, r1, r2, incorretos):
+        def animated_incorrect_count(t1, r1, r2, incorretos):
             """
             :param: t1: secret key table (down table)
                     r1: secret key array
@@ -115,7 +115,7 @@ class binary_list(Scene):
         # Inicial counting
         vec = Vector(UP, color=BLUE).next_to(row_obj[0], DOWN, buff=0.6).scale(0.8)
         self.play(FadeIn(vec))
-        incorrect_count(t1, row1, row2, incorretos)
+        animated_incorrect_count(t1, row1, row2, incorretos)
         self.play(FadeOut(vec))
         
         # Update minimum value
@@ -147,7 +147,7 @@ Senão:
         rendered_code = Code(code=code, tab_width=4, background="window",
                             language="pypy", font="Monospace", color=BLUE)
         self.play(FadeIn(rendered_code))
-        self.wait(14)
+        self.wait(16)
 
         # Clear scene
         v = VGroup(text8, rendered_code)
@@ -176,10 +176,10 @@ Senão:
             row_obj = t2.get_rows()[0]
             if incorretos.get_value() < minincorretos.get_value():
                 minincorretos.set_value(incorretos.get_value())
-                text = Text("2. O número de incorretos diminuiu, mantemos o dígito").scale(0.5).next_to(title_text, DOWN)
+                text = Text("2. O número de incorretos diminuiu, mantemos o dígito anterior").scale(0.5).next_to(title_text, DOWN)
                 self.play(FadeIn(text))
             else:
-                text = Text("2. O número de incorretos não diminuiu, voltamos a alterar o dígito").scale(0.5).next_to(title_text, DOWN)
+                text = Text("2. O número de incorretos não diminuiu, voltamos a alterar o dígito anterior").scale(0.5).next_to(title_text, DOWN)
                 self.play(FadeIn(text))
                 self.wait(1)
 
@@ -189,6 +189,17 @@ Senão:
 
             self.wait(2)
             self.play(FadeOut(text))
+            
+        def incorrect_count(r1, r2, incorretos):
+            # Does not show any animation
+            self.wait()
+            cnt = 0
+            for i in range(len(r1)):
+                if r1[i] != r2[i]:
+                    cnt += 1
+
+            incorretos.set_value(cnt)
+            self.wait()
 
         for i in range(6):
             # Add current vector
@@ -197,7 +208,7 @@ Senão:
 
             # First step
             # Count number of incorrect digits
-            incorrect_count(t1, row1, row2, incorretos)
+            incorrect_count(row1, row2, incorretos)
 
             # Second step
             text10 = Text("1. Alterar dígito atual").scale(0.5).next_to(text9, DOWN)
@@ -226,10 +237,10 @@ Senão:
 
             if i != 5:
                 self.play(FadeOut(vec))
-                tentativa += 1
+                tentativa+= 1
         
         # Last pass
-        incorrect_count(t1, row1, row2, incorretos)
+        incorrect_count(row1, row2, incorretos)
         # ALGORITHM SCENE ENDED
 
         """
@@ -248,3 +259,5 @@ Senão:
         text13 = MarkupText(f"Afterschool <span fgcolor='{BLUE}'>Informática I</span>").scale(1.2)
         self.play(FadeIn(text13))
         self.wait(4)
+        self.play(FadeOut(text13))
+        self.wait(2)
